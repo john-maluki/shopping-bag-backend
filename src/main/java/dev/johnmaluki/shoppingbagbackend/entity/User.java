@@ -40,9 +40,4 @@ public class User {
 
     @Column(name = "mobile_number")
     private String mobileNumber;
-
-    @OneToOne(
-            mappedBy = "user"
-    )
-    private ShopKeeper shopKeeper;
 }

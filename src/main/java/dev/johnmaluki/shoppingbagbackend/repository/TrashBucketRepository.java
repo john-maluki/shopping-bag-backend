@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TrashBucketRepository extends JpaRepository<TrashBucket, Long> {
+    boolean existsTrashBucketByShoppingBagShoppingBagId(long shoppingBagId);
 }

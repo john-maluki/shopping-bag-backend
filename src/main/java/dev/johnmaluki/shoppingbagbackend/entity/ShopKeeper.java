@@ -25,12 +25,12 @@ public class ShopKeeper {
     private long shopKeeperId;
 
     @OneToOne(
-            cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY
+            cascade = CascadeType.ALL
     )
     @JoinColumn(
             name = "user_id",
             referencedColumnName = "userId"
     )
-    private User user;
+    private User shopOwner;
+
 }

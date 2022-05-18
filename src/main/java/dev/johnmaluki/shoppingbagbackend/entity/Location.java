@@ -38,4 +38,11 @@ public class Location {
 
     @Column(name = "shop_location_description")
     private String description;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(
+            name = "shop_id",
+            referencedColumnName = "shopId"
+    )
+    private Shop shop;
 }

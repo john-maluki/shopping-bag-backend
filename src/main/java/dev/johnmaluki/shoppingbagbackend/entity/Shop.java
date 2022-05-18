@@ -1,9 +1,6 @@
 package dev.johnmaluki.shoppingbagbackend.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
@@ -32,17 +29,11 @@ public class Shop {
             name = "shop_keeper",
             referencedColumnName = "shopKeeperId"
     )
+    @Getter(AccessLevel.NONE)
     private ShopKeeper shopKeeper;
 
     @Column(name = "shop_name")
     private String name;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(
-            name = "shop_location",
-            referencedColumnName = "locationId"
-    )
-    private Location location;
 
     @Column(name = "shop_description")
     private String description;
@@ -53,10 +44,12 @@ public class Shop {
     @Column(name = "is_open")
     private boolean isOpen;
 
-    @Column(name = "is_closed")
-    private boolean isClosed;
+    @Column(name = "is_activated")
+    private boolean isActivated;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(
+            cascade = CascadeType.ALL
+    )
     @JoinTable(
             name = "shop_product",
             joinColumns = @JoinColumn(
@@ -69,5 +62,6 @@ public class Shop {
             )
 
     )
-    private List<Product> product;
+    @Getter(AccessLevel.NONE)
+    private List<Product> products;
 }

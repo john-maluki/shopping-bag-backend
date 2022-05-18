@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
 @Data
@@ -33,6 +34,6 @@ public class ShopProduct {
     private long product;
 
     @Column(name = "shop_product_price")
-    private int price;
+    private BigDecimal price;
 
 }

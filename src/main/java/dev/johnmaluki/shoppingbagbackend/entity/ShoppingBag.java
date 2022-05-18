@@ -1,9 +1,6 @@
 package dev.johnmaluki.shoppingbagbackend.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -39,6 +36,7 @@ public class ShoppingBag {
             name = "shopping_bag_owner",
             referencedColumnName = "userId"
     )
+    @Getter(AccessLevel.NONE)
     private User owner;
 
     @Column(name = "shopping_status")
@@ -59,5 +57,6 @@ public class ShoppingBag {
                     referencedColumnName = "shopProductId"
             )
     )
-    private List<ShopProduct> shopProduct;
+    @Getter(AccessLevel.NONE)
+    private List<ShopProduct> shoppingBagProducts;
 }

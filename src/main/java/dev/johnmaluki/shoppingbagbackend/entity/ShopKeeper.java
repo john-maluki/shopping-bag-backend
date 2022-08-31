@@ -3,13 +3,15 @@ package dev.johnmaluki.shoppingbagbackend.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@ToString(exclude = "user")
+@ToString(exclude = {"user", "shops"})
 @Table(name = "shop_keeper")
 public class ShopKeeper {
     @Id
@@ -22,15 +24,17 @@ public class ShopKeeper {
             strategy = GenerationType.SEQUENCE,
             generator = "shop_keeper_sequence"
     )
-    private long shopKeeperId;
+    private long id;
 
-    @OneToOne(
-            cascade = CascadeType.ALL
-    )
+    @Getter(AccessLevel.NONE)
+    @Builder.Default
+    @OneToMany( mappedBy = "shopKeeper", cascade = CascadeType.ALL)
+    private List<Shop> shops = new ArrayList<>();
+
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(
             name = "user_id",
-            referencedColumnName = "userId"
+            referencedColumnName = "id"
     )
-    private User shopOwner;
-
+    private User user;
 }

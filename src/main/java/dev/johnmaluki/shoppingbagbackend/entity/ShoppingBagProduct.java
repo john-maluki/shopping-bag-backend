@@ -1,14 +1,13 @@
 package dev.johnmaluki.shoppingbagbackend.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -24,13 +23,17 @@ public class ShoppingBagProduct {
             strategy = GenerationType.SEQUENCE,
             generator = "shopping_bag_product_sequence"
     )
-    private long shoppingBagProductId;
+    private long id;
 
-    @Column(name = "shopping_bag_id")
-    private long shoppingBag;
+    @JsonIgnore
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "shopping_bag_id")
+    private ShoppingBag shoppingBag;
 
-    @Column(name = "shop_product_id")
-    private long shopProduct;
+    @JsonIgnore
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "shop_product_id")
+    private ShopProduct shopProduct;
 
     @Column(name = "quantity")
     private int quantity;

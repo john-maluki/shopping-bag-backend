@@ -1,43 +1,41 @@
 package dev.johnmaluki.shoppingbagbackend.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "trash_bucket")
-public class TrashBucket {
+@Table(name = "user_trash")
+public class UserTrash {
     @Id
     @SequenceGenerator(
-            name = "trash_bucket_sequence",
-            sequenceName = "trash_bucket_sequence",
+            name = "user_trash_sequence",
+            sequenceName = "user_trash_sequence",
             allocationSize = 1
     )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "trash_bucket_sequence"
+            generator = "user_trash_sequence"
     )
     private long id;
-    @JsonIgnore
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinColumn(
-            name = "user_trash_id",
-            referencedColumnName = "id"
-    )
-    private UserTrash userTrash;
 
     @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(
-            name = "shopping_bag_id",
+            name = "user_id",
             referencedColumnName = "id"
     )
-    private ShoppingBag shoppingBag;
+    private User user;
+
+    @OneToMany(mappedBy = "userTrash", cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<TrashBucket> trashBuckets =  new ArrayList<>();
 }

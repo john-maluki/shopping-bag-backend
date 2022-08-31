@@ -1,14 +1,17 @@
 package dev.johnmaluki.shoppingbagbackend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString(exclude = {"location"})
 @Builder
 @Table(name = "shop")
 public class Shop {
@@ -22,15 +25,7 @@ public class Shop {
             strategy = GenerationType.SEQUENCE,
             generator = "shop_sequence"
     )
-    private long shopId;
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(
-            name = "shop_keeper",
-            referencedColumnName = "shopKeeperId"
-    )
-    @Getter(AccessLevel.NONE)
-    private ShopKeeper shopKeeper;
+    private long id;
 
     @Column(name = "shop_name")
     private String name;
@@ -41,27 +36,27 @@ public class Shop {
     @Embedded
     private ShopContact shopContact;
 
+    @JsonIgnore
+    @OneToOne(mappedBy = "shop", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Location location;
+
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(
+            name = "shop_keeper_id",
+            referencedColumnName = "id"
+
+    )
+    private ShopKeeper shopKeeper;
+
     @Column(name = "is_open")
     private boolean isOpen;
 
     @Column(name = "is_activated")
     private boolean isActivated;
 
-    @ManyToMany(
-            cascade = CascadeType.ALL
-    )
-    @JoinTable(
-            name = "shop_product",
-            joinColumns = @JoinColumn(
-                    name = "shop_id",
-                    referencedColumnName = "shopId"
-            ),
-            inverseJoinColumns = @JoinColumn(
-                    name = "product_id",
-                    referencedColumnName = "productId"
-            )
+    @Builder.Default
+    @JsonIgnore
+    @OneToMany(mappedBy = "shop")
+    private Set<ShopProduct> shopProducts = new HashSet<>();
 
-    )
-    @Getter(AccessLevel.NONE)
-    private List<Product> products;
 }

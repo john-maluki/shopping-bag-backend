@@ -12,24 +12,20 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "category")
-public class Category {
+@Table(name = "permission")
+public class Permission {
     @Id
     @SequenceGenerator(
-            name = "category_sequence",
-            sequenceName = "category_sequence",
+            name = "permission_sequence",
+            sequenceName = "permission_sequence",
             allocationSize = 1
     )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "category_sequence"
+            generator = "permission_sequence"
     )
     private long id;
 
-    @Column(
-            name = "category_name",
-            unique = true,
-            nullable = false
-    )
-    private String name;
+    @Column(name = "permission_name", unique = true)
+    private String permissionName;
 }

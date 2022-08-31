@@ -1,10 +1,14 @@
 package dev.johnmaluki.shoppingbagbackend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.List;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Stream;
 
 @Entity
 @Data
@@ -23,40 +27,72 @@ public class ShoppingBag {
             strategy = GenerationType.SEQUENCE,
             generator = "shopping_bag_sequence"
     )
-    private long shoppingBagId;
+    private long id;
 
-    @Column(name = "shop_product_id")
-    private long shopProductId;
+    @Column(name = "description")
+    private String description;
 
-    @Column(name = "creation_date")
-    private Date creationDate;
+    @Column(name = "date_created", nullable = false, updatable = false)
+    @Builder.Default
+    private LocalDateTime dateCreated = LocalDateTime.now();
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @JsonIgnore
+    @ManyToOne(cascade = {
+            CascadeType.MERGE, CascadeType.PERSIST,
+            CascadeType.DETACH, CascadeType.REFRESH,
+    })
     @JoinColumn(
-            name = "shopping_bag_owner",
-            referencedColumnName = "userId"
+            name = "user_id",
+            referencedColumnName = "id"
     )
-    @Getter(AccessLevel.NONE)
     private User owner;
 
     @Column(name = "shopping_status")
-    private String shoppingStatus;
+    @Basic
+    private int shoppingStatus;
 
-    @Column(name = "total_product_price")
-    private String totalProductPrice;
+    @Transient
+    private ShoppingProcessStatus shoppingProcessStatus;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "shopping_bag_product",
-            joinColumns = @JoinColumn(
-                    name = "shopping_bag_id",
-                    referencedColumnName = "shoppingBagId"
-            ),
-            inverseJoinColumns = @JoinColumn(
-                    name = "shop_product_id",
-                    referencedColumnName = "shopProductId"
-            )
-    )
-    @Getter(AccessLevel.NONE)
-    private List<ShopProduct> shoppingBagProducts;
+    @Transient
+    private BigDecimal totalProductPrice;
+
+    @JsonIgnore
+    @Builder.Default
+    @OneToMany(mappedBy = "shoppingBag")
+    private Set<ShoppingBagProduct> shoppingBagProducts = new HashSet<>();
+
+    @PostLoad
+    private void fillTransient() {
+        if (shoppingStatus > 0) {
+            this.shoppingProcessStatus = ShoppingProcessStatus.of(shoppingStatus);
+        }
+    }
+
+    @PrePersist
+    private void fillPersistent() {
+        if (shoppingProcessStatus != null) {
+            this.shoppingStatus = shoppingProcessStatus
+                    .getProcessStatusValue();
+        }
+    }
+
+    @Getter
+    public enum ShoppingProcessStatus {
+        ONGOING(1), COMPLETE(2);
+
+        final private int processStatusValue;
+
+        ShoppingProcessStatus(int processStatusValue){
+            this.processStatusValue = processStatusValue;
+        }
+
+        public static ShoppingProcessStatus of(int shoppingProcessStatus){
+            return Stream.of(ShoppingProcessStatus.values())
+                    .filter(status -> status.getProcessStatusValue() == shoppingProcessStatus)
+                    .findFirst().orElseThrow(IllegalArgumentException::new);
+        }
+    }
+
+
 }

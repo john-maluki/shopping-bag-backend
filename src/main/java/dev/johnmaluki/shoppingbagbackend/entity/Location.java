@@ -1,5 +1,6 @@
 package dev.johnmaluki.shoppingbagbackend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,7 +26,7 @@ public class Location {
             strategy = GenerationType.SEQUENCE,
             generator = "location_sequence"
     )
-    private long locationId;
+    private long id;
 
     @Column(name = "state")
     private String state;
@@ -36,13 +37,14 @@ public class Location {
     @Column(name = "street")
     private String street;
 
-    @Column(name = "shop_location_description")
+    @Column(name = "location_description")
     private String description;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @JsonIgnore
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(
             name = "shop_id",
-            referencedColumnName = "shopId"
+            referencedColumnName = "id"
     )
     private Shop shop;
 }

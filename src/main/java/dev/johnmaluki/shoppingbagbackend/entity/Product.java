@@ -1,12 +1,14 @@
 package dev.johnmaluki.shoppingbagbackend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Data
@@ -25,12 +27,12 @@ public class Product {
             strategy = GenerationType.SEQUENCE,
             generator = "product_sequence"
     )
-    private long productId;
+    private long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinColumn(
             name = "product_brand",
-            referencedColumnName = "brandId"
+            referencedColumnName = "id"
     )
     private Brand brand;
 
@@ -43,8 +45,8 @@ public class Product {
     @Column(name = "product_description")
     private String description;
 
-    @Column(name = "product_img")
-    private String picture;
+    @Column(name = "product_img_code")
+    private String imageCode;
 
     @Column(name = "product_sku")
     private String sku;
@@ -52,16 +54,24 @@ public class Product {
     @Column(name = "model_number")
     private String modelNumber;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             joinColumns = @JoinColumn(
                     name = "product_id",
-                    referencedColumnName = "productId"
+                    referencedColumnName = "id"
             ),
             inverseJoinColumns = @JoinColumn(
                     name = "product_type_id",
-                    referencedColumnName = "productTypeId"
+                    referencedColumnName = "id"
             )
     )
-    private List<ProductType> productType;
+    private Set<ProductType> productTypes = new HashSet<>();
+
+    @Builder.Default
+    @JsonIgnore
+    @OneToMany(mappedBy = "product")
+    private Set<ShopProduct> shopProducts = new HashSet<>();
+
+    @Transient
+    private String imageUrl;
 }

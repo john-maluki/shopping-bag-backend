@@ -1,18 +1,19 @@
 package dev.johnmaluki.shoppingbagbackend.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@ToString(exclude = {"shop", "product", "shoppingBagProducts"})
 @Table(name = "shop_product")
 public class ShopProduct {
     @Id
@@ -25,15 +26,22 @@ public class ShopProduct {
             strategy = GenerationType.SEQUENCE,
             generator = "shop_product_sequence"
     )
-    private long shopProductId;
+    private long id;
 
-    @Column(name = "shop_id")
-    private long shop;
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "shop_id")
+    private Shop shop;
 
-    @Column(name = "product_id")
-    private long product;
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "product_id")
+    private Product product;
 
     @Column(name = "shop_product_price")
     private BigDecimal price;
+
+    @JsonIgnore
+    @Builder.Default
+    @OneToMany(mappedBy = "shopProduct")
+    private Set<ShoppingBagProduct> shoppingBagProducts = new HashSet<>();
 
 }

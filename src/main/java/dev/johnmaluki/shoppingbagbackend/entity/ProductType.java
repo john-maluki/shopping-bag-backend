@@ -24,7 +24,7 @@ public class ProductType {
             strategy = GenerationType.SEQUENCE,
             generator = "product_type_sequence"
     )
-    private long productTypeId;
+    private long id;
 
     @Column(
             name = "product_type_name",
@@ -32,10 +32,10 @@ public class ProductType {
     )
     private String name;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.PERSIST})
     @JoinColumn(
-            name = "product_type_category",
-            referencedColumnName = "categoryId"
+            name = "category_id",
+            referencedColumnName = "id"
     )
     private Category category;
 }

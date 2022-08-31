@@ -30,10 +30,11 @@ public class Brand {
             strategy = GenerationType.SEQUENCE,
             generator = "brand_sequence"
     )
-    private long brandId;
+    private long id;
 
     @Column(
             name = "brand_name",
+            unique = true,
             nullable = false
     )
     private String name;

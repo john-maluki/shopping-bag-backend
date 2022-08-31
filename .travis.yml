@@ -1,6 +1,8 @@
 language: java
 jdk: openjdk17
 
+if: tag IS present
+
 services:
   - postgresql
 

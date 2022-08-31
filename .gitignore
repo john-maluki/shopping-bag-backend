@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Image Locations ###
+shopping_bag_product_images/

@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  shopping-bag-backend:
+    image: 'shopping-bag-backend:0.0.1-SNAPSHOT'
+    build:
+      context: .
+    container_name: shopping-bag-backend
+    depends_on:
+      - db
+    volumes:
+      - ./shopping_bag_product_images:/shopping_bag_product_images
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/shopping_bag
+      - SPRING_DATASOURCE_USERNAME=shopping_bag
+      - SPRING_DATASOURCE_PASSWORD=shop@123
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+
+    ports:
+      - "8080:8080"
+
+  db:
+    image: 'postgres:13.1-alpine'
+    container_name: shopping-bag-backend-db
+    environment:
+      - POSTGRES_USER=shopping_bag
+      - POSTGRES_PASSWORD=shop@123
+
+    volumes:
+      - pgData:/var/lib/psotgresql/data

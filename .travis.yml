@@ -5,7 +5,8 @@ services:
   - postgresql
 
 before_script:
-  - psql -c 'create database shopping_bag1;' -U shopping_bag
+  - psql -c "CREATE DATABASE shopping_bag1;" -U postgres
+  - psql -c "CREATE USER shopping_bag WITH PASSWORD 'shop@123';" -U postgres
 
 script:
   - ./mvnw clean install -B

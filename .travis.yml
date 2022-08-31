@@ -1,2 +1,8 @@
 language: java
 jdk: openjdk17
+
+services:
+  - postgresql
+
+script:
+  - ./mvnw clean install -B

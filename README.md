@@ -1,4 +1,4 @@
-# SHOPPING-BAG BACKEND
+# SHOPPING-BAG BACKEND [![Build Status](https://app.travis-ci.com/john-maluki/shopping-bag-backend.svg?branch=main)](https://app.travis-ci.com/john-maluki/shopping-bag-backend)
 
 ## Overview
 A shopping bag is a backend online store application that supports restful services. 
